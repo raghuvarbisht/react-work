@@ -5,6 +5,8 @@ export interface Product {
   id: number;
   name: string;
   price: number;
+  image?: string;
+  description: string;
 }
 
 interface ProductState {
@@ -30,11 +32,7 @@ const productSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder
-      .addCase(fetchProducts.pending, (state) => { 
-        state.loading = true; 
-      })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+    builder.addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
@@ -43,23 +41,21 @@ const productSlice = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(p => p.id === action.payload.id);
-        if (index !== -1) state.items[index] = action.payload;
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.items = state.items.filter(p => p.id !== action.payload);
-      })
-      // Handle all pending actions
+      })      // Handle all pending actions
       .addMatcher(isPending(fetchProducts, addProduct, updateProduct, deleteProduct), state => {
         state.loading = true;
         state.error = null;
-      })
-
-      // Handle all rejected actions
+      })      // Handle all rejected actions
       .addMatcher(isRejected(fetchProducts, addProduct, updateProduct, deleteProduct), (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Something went wrong';
       });
   },
 });
-
 export default productSlice.reducer;

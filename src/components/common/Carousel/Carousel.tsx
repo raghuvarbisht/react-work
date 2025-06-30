@@ -11,7 +11,7 @@ interface CarouselProps {
   interval?: number;
 }
 
-const Carousel: React.FC<CarouselProps> = ({ slides, interval = 3000 }) => {
+const Carousel: React.FC<CarouselProps> = ({ slides, interval = 5000 }) => {
   const [current, setCurrent] = useState<number>(0);
   const timeoutRef = useRef<any>(null);
 
